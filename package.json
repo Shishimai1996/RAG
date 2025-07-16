@@ -1,0 +1,47 @@
+{
+  "name": "rag-test-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run embed-docs && next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "embed-docs": "tsx scripts/embedMarkdown.ts"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@langchain/community": "^0.3.40",
+    "@langchain/core": "^0.3.44",
+    "@langchain/openai": "^0.5.5",
+    "@langchain/qdrant": "^0.1.2",
+    "@mui/icons-material": "^7.1.0",
+    "@mui/material": "^7.1.0",
+    "@qdrant/js-client-rest": "^1.13.0",
+    "dotenv": "^16.5.0",
+    "faiss-node": "^0.5.1",
+    "keycloak-js": "^26.2.0",
+    "langchain": "^0.3.20",
+    "next": "15.2.4",
+    "next-intl": "^4.1.0",
+    "openai": "^4.91.1",
+    "qdrant-client": "^0.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
+    "uuid": "^11.1.0",
+    "uuid-by-string": "^4.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20.17.30",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5"
+  }
+}

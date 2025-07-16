@@ -1,0 +1,8 @@
+{
+    "askQ":"Ask a question",
+    "questionField": "Ask a question...",
+    "answer":"Answer:",
+    "errorTryAgain":"Oops! Something wrong happen. Please reload and try it again!",
+    "errorEmptyQuestion":"Please type in your question"
+    
+}

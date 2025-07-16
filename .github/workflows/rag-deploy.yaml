@@ -1,0 +1,33 @@
+# # yamllint disable rule:line-length
+# ---
+# name: rag-deploy
+# on:
+#   workflow_dispatch:
+
+# jobs:
+#   build_push_image:
+#     runs-on: [self-hosted, linux]
+#     steps:
+#       - name: Checkout current branch
+#         uses: actions/checkout@v4
+
+#       - name: login to stargate docker artifactory
+#         run: echo "${{ secrets.ARTIFACTORY_STARGATE_TOKEN }}" | docker login artifactory.stargate.toyota -u "${{ secrets.ARTIFACTORY_STARGATE_USER }}" --password-stdin
+
+#       - name: Debug secrets
+#         run: |
+#           echo "URL: ${{ secrets.KEYCLOAK_URL }}"
+#           echo "REALM: ${{ secrets.KEYCLOAK_REALM }}"
+#           echo "CLIENT_ID: ${{ secrets.KEYCLOAK_CLIENT_ID }}"
+
+#       - name: Build and Push
+#         id: build-and-push
+#         run: |
+#           BUILD_ARGS=$(grep -v '^#' .env.public | xargs -d '\n' -I {} echo --build-arg {} | xargs)
+
+#           docker buildx build \
+#           $BUILD_ARGS \
+#             -t artifactory.stargate.toyota/wcm-wig-lab/inventor-portal/rag-frontend:${{ github.run_id }} \
+#             . \
+#             && docker push artifactory.stargate.toyota/wcm-wig-lab/inventor-portal/rag-frontend:${{ github.run_id }} \
+#             && echo "image-tag=artifactory.stargate.toyota/wcm-wig-lab/inventor-portal/rag-frontend:${{ github.run_id }}"

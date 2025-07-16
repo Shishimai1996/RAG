@@ -1,0 +1,8 @@
+{
+    "askQ":"質問する",
+    "questionField": "質問を入力する...",
+    "answer":"回答:",
+    "errorTryAgain":"おっと、何かが起こりました。リロードしてもう一度お試しください。",
+    "errorEmptyQuestion":"質問を入力してください"
+    
+}
