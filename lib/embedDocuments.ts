@@ -30,7 +30,7 @@ export const embedDocuments = async (openAIApiKey: string) => {
   //see if database already has my-docs vectors.
   const collections = await qdrantClient.getCollections();
   const exists = collections.collections.some(
-    (col) => col.name === COLLECTION_NAME
+    (col) => col.name === COLLECTION_NAME,
   );
 
   if (exists) {
@@ -51,7 +51,7 @@ export const embedDocuments = async (openAIApiKey: string) => {
 
     //check if there is new one
     const newOnly = newDocsWithIds.filter(
-      (doc) => !existingIds.has(doc.metadata.id)
+      (doc) => !existingIds.has(doc.metadata.id),
     );
 
     console.log(`📦 Filtered ${newOnly?.length} new documents.`);
@@ -63,7 +63,7 @@ export const embedDocuments = async (openAIApiKey: string) => {
         {
           client: qdrantClient,
           collectionName: COLLECTION_NAME,
-        }
+        },
       );
       await vectorStore.addDocuments(newOnly, {
         ids: newOnly.map((docs) => docs.metadata.id),

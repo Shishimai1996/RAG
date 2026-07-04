@@ -21,7 +21,7 @@ export const prepareRetriever = async (openAIApiKey: string) => {
     {
       client: qdrantClient,
       collectionName: "my-docs",
-    }
+    },
   );
 
   return vectorStore.asRetriever({ k: 10 });
