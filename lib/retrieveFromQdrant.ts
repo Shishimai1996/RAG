@@ -5,12 +5,15 @@ import { QdrantVectorStore } from "@langchain/qdrant";
 import { QdrantClient } from "@qdrant/js-client-rest";
 import { embeddingVector } from "./setupEmbedVector";
 
-export const prepareRetriever = async (woveyAccessKey: string) => {
+export const prepareRetriever = async (openAIApiKey: string) => {
   //create client to connect qdrant
-  const qdrantClient = new QdrantClient({ url: process.env.QDRANT_URL });
+  const qdrantClient = new QdrantClient({
+    url: process.env.QDRANT_URL,
+    apiKey: process.env.QDRANT_API_KEY,
+  });
 
-  //get embedding model of text-embedding-3-large
-  const embeddings = await embeddingVector(woveyAccessKey);
+  //get embedding model of text-embedding-3-small
+  const embeddings = await embeddingVector(openAIApiKey);
 
   //return vector store data
   const vectorStore = await QdrantVectorStore.fromExistingCollection(

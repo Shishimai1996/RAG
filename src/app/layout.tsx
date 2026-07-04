@@ -1,6 +1,6 @@
-import "../../styles/globals.css";
+// import "../../styles/globals.css";
 import { ReactNode } from "react";
-import KeycloakWrapper from "@/lib/keycloakWrapper";
+// import KeycloakWrapper from "@/lib/keycloakWrapper";
 
 export const metadata = {
   title: "RAG App",
@@ -14,7 +14,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <KeycloakWrapper>{children}</KeycloakWrapper>
+        {/* Keycloak authentication temporarily disabled. */}
+        {children}
       </body>
     </html>
   );

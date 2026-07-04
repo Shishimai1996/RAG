@@ -3,23 +3,23 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { prepareRetriever } from "./retrieveFromQdrant";
-import { getWoveyAccess } from "./setupWoveyAccess";
+import { getOpenAIApiKey } from "./setupWoveyAccess";
 
 export async function callLangchainModel(question: string) {
-  //get Wovey Access key
-  const woveyAccessKey = await getWoveyAccess();
+  const openAIApiKey = await getOpenAIApiKey();
 
-  const retriever = await prepareRetriever(woveyAccessKey);
+  const retriever = await prepareRetriever(openAIApiKey);
   //if you want to see the retrieved document, open the following lines.
-  // const retrievedDocs = await retriever.invoke(question);
-  // console.log(`🧠 Retrieved documents for question: "${question}"`);
-  // retrievedDocs.forEach((doc, i) => {
-  //   console.log(`\n[Document ${i + 1}]`);
-  //   console.log(doc.pageContent);
-  //   if (doc.metadata) {
-  //     console.log("Metadata:", doc.metadata);
-  //   }
-  // });
+  const retrievedDocs = await retriever.invoke(question);
+  console.log(`🧠 Retrieved documents for question: "${question}"`);
+  console.log(`📊 Found ${retrievedDocs.length} documents`);
+  retrievedDocs.forEach((doc, i) => {
+    console.log(`\n[Document ${i + 1}]`);
+    console.log(doc.pageContent);
+    if (doc.metadata) {
+      console.log("Metadata:", doc.metadata);
+    }
+  });
 
   const isJapanese = /[ぁ-んァ-ン一-龥]/.test(question);
   const fallbackText = isJapanese
@@ -38,11 +38,11 @@ export async function callLangchainModel(question: string) {
 Context:
 {context}
 
-Question: {input}`
+Question: {input}`,
   );
 
   const combineDocsChain = await createStuffDocumentsChain({
-    llm: generateLlm(woveyAccessKey),
+    llm: generateLlm(openAIApiKey),
     prompt,
   });
 

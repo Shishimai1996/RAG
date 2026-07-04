@@ -9,12 +9,15 @@ import { QdrantVectorStore } from "@langchain/qdrant";
 
 const COLLECTION_NAME = "my-docs";
 
-export const embedDocuments = async (woveyAccessKey: string) => {
+export const embedDocuments = async (openAIApiKey: string) => {
   const allDocs = await getRetrieverFromMarkdown();
-  //get embedding model of text-embedding-3-large
-  const embeddings = await embeddingVector(woveyAccessKey);
+  //get embedding model of text-embedding-3-small
+  const embeddings = await embeddingVector(openAIApiKey);
   //create client to connect qdrant
-  const qdrantClient = new QdrantClient({ url: process.env.QDRANT_URL });
+  const qdrantClient = new QdrantClient({
+    url: process.env.QDRANT_URL,
+    apiKey: process.env.QDRANT_API_KEY,
+  });
 
   //if you want to delete data from database.
   // await qdrantClient.delete(COLLECTION_NAME, {

@@ -211,7 +211,7 @@ export default function Home() {
               >
                 <Box
                   sx={{
-                    backgroundColor: "#54525247",
+                    backgroundColor: "#22212146",
                     borderRadius: "12px",
                     padding: { xs: "16px", sm: "24px 32px" },
                     maxWidth: "700px",

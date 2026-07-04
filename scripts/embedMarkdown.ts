@@ -1,10 +1,10 @@
 import { embedDocuments } from "@/lib/embedDocuments";
-import { getWoveyAccess } from "@/lib/setupWoveyAccess";
+import { getOpenAIApiKey } from "@/lib/setupWoveyAccess";
 
 async function run() {
-  const woveyAccessKey = await getWoveyAccess();
+  const openAIApiKey = await getOpenAIApiKey();
 
-  await embedDocuments(woveyAccessKey);
+  await embedDocuments(openAIApiKey);
 
   console.log("✅ Embedded Markdown to Qdrant!");
 }

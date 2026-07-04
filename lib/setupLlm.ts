@@ -1,15 +1,9 @@
 import { ChatOpenAI } from "@langchain/openai";
 
-export const generateLlm = (access_token: string) => {
+export const generateLlm = (apiKey: string) => {
   return new ChatOpenAI({
-    model: "gpt-4o",
-    apiKey: access_token,
-    configuration: {
-      baseURL: "",
-      defaultHeaders: {
-        "Wovey-Stargate-Project-ID": process.env.WOVEY_PROJECT_ID,
-      },
-    },
+    model: "gpt-3.5-turbo",
+    apiKey,
     temperature: 0.3,
     streaming: false,
   });

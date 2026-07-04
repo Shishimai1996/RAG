@@ -1,4 +1,4 @@
-import "../../../styles/globals.css";
+// import "../../../styles/globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
