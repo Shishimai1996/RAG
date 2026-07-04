@@ -118,6 +118,18 @@ export default function Home() {
             >
               {t("askQ")}
             </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontSize: { xs: "16px", sm: "18px", md: "20px" },
+                mt: 1,
+                textAlign: "center",
+                maxWidth: "640px",
+                color: "#c7c7c7",
+              }}
+            >
+              {t("subtitle")}
+            </Typography>
 
             <Box
               component="form"
@@ -197,6 +209,34 @@ export default function Home() {
                   <IoSend color="#04f6fa" size="30" />
                 )}
               </Button>
+            </Box>
+
+            <Box
+              sx={{
+                width: { xs: "300px", sm: "500px", md: "700px" },
+                maxWidth: "700px",
+                mt: 2,
+                textAlign: "center",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ color: "#a3a3a3", fontSize: { xs: "13px", sm: "14px", md: "15px" } }}
+              >
+                Try asking things like:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "#f2f2f2", fontSize: { xs: "14px", sm: "15px", md: "16px" }, mt: 1 }}
+              >
+                • How does this app load documents and use Qdrant for retrieval?
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "#f2f2f2", fontSize: { xs: "14px", sm: "15px", md: "16px" }, mt: 0.5 }}
+              >
+                • What is Retrieval-Augmented Generation (RAG) and why is it useful?
+              </Typography>
             </Box>
 
             {displayedText && (

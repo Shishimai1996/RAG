@@ -1,8 +1,9 @@
 {
-    "askQ":"Ask a question",
-    "questionField": "Ask a question...",
+    "askQ":"Ask a question about the app",
+    "subtitle":"Learn how this RAG app works and how content flows through it.",
+    "questionField": "Ask about the app structure or RAG...",
     "answer":"Answer:",
-    "errorTryAgain":"Oops! Something wrong happen. Please reload and try it again!",
+    "errorTryAgain":"Oops! Something went wrong. Please reload and try again!",
     "errorEmptyQuestion":"Please type in your question"
     
 }

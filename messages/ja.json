@@ -1,6 +1,7 @@
 {
-    "askQ":"質問する",
-    "questionField": "質問を入力する...",
+    "askQ":"アプリについて質問する",
+    "subtitle":"このRAGアプリの構成と仕組みについて学びましょう。",
+    "questionField": "アプリ構成やRAGについて質問する...",
     "answer":"回答:",
     "errorTryAgain":"おっと、何かが起こりました。リロードしてもう一度お試しください。",
     "errorEmptyQuestion":"質問を入力してください"
