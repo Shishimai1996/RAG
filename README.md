@@ -2,6 +2,8 @@
 
 An internal document Q&A system powered by Retrieval-Augmented Generation (RAG). Users type natural language questions and receive AI-generated answers grounded in Markdown documentation — with bilingual support for English and Japanese.
 
+**[Live Demo](https://rag-git-main-maishis-projects.vercel.app/)**
+
 ## Features
 
 - **RAG Pipeline** — Markdown documents are chunked, embedded with OpenAI `text-embedding-3-small`, and stored in Qdrant. On each query, the top-10 semantically similar chunks are retrieved and passed to GPT-3.5-turbo as context via LangChain.
@@ -86,7 +88,7 @@ await qdrantClient.delete(COLLECTION_NAME, { filter: {} });
 
 ## CI/CD & Deployment
 
-The app is containerized with Docker. A GitHub Actions workflow builds a new Docker image on each deployment trigger and pushes it to the registry.
+The app is deployed on [Vercel](https://vercel.com). Pushing to `main` automatically triggers a production deployment.
 
 ## Project Structure
 
@@ -94,7 +96,7 @@ The app is containerized with Docker. A GitHub Actions workflow builds a new Doc
 ├── src/
 │   ├── app/
 │   │   ├── [locale]/          # i18n-aware pages (Next.js App Router)
-│   │   │   ├── page.tsx       # Server component (Keycloak auth check)
+│   │   │   ├── page.tsx       # Server component entry point
 │   │   │   └── clientHome.tsx # Chat UI (streaming, markdown rendering)
 │   │   └── api/ask/route.ts   # POST endpoint → LangChain RAG chain
 │   └── i18n/                  # next-intl routing & locale config
@@ -106,7 +108,7 @@ The app is containerized with Docker. A GitHub Actions workflow builds a new Doc
 │   └── setupLlm.ts            # GPT-3.5-turbo model setup
 ├── components/
 │   ├── retriever.ts           # Markdown loader & heading splitter
-│   └── uuidGenerater.ts       # UUID-based document deduplication
+│   └── uuidGenerator.ts       # UUID-based document deduplication
 ├── scripts/
 │   └── embedMarkdown.ts       # Entry point for embed-docs script
 ├── data/                      # Source Markdown documents
