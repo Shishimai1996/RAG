@@ -2,12 +2,6 @@
 
 An internal document Q&A system powered by Retrieval-Augmented Generation (RAG). Users type natural language questions and receive AI-generated answers grounded in Markdown documentation — with bilingual support for English and Japanese.
 
-## Screenshots
-
-| Question Input | Answer (Streaming) |
-|---|---|
-| ![Input](public/Screenshot%202025-07-17%20at%2014.57.35.png) | ![Answer](public/Screenshot%202025-07-17%20at%2014.57.55.png) |
-
 ## Features
 
 - **RAG Pipeline** — Markdown documents are chunked, embedded with OpenAI `text-embedding-3-small`, and stored in Qdrant. On each query, the top-10 semantically similar chunks are retrieved and passed to GPT-3.5-turbo as context via LangChain.
@@ -18,15 +12,15 @@ An internal document Q&A system powered by Retrieval-Augmented Generation (RAG).
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 15 (App Router), React 19, TypeScript |
-| UI Components | Material UI v7 |
-| LLM | OpenAI GPT-3.5-turbo via LangChain |
-| Embeddings | OpenAI `text-embedding-3-small` |
-| Vector Store | Qdrant |
-| i18n | next-intl (English / Japanese) |
-| Containerization | Docker, Docker Compose |
+| Layer            | Technology                                    |
+| ---------------- | --------------------------------------------- |
+| Frontend         | Next.js 15 (App Router), React 19, TypeScript |
+| UI Components    | Material UI v7                                |
+| LLM              | OpenAI GPT-3.5-turbo via LangChain            |
+| Embeddings       | OpenAI `text-embedding-3-small`               |
+| Vector Store     | Qdrant                                        |
+| i18n             | next-intl (English / Japanese)                |
+| Containerization | Docker, Docker Compose                        |
 
 ## Architecture
 
