@@ -4,7 +4,7 @@ dotenv.config();
 import { getRetrieverFromMarkdown } from "@/components/retriever";
 import { embeddingVector } from "./setupEmbedVector";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { uuidGenerater } from "@/components/uuidGenerater";
+import { uuidGenerator } from "@/components/uuidGenerator";
 import { QdrantVectorStore } from "@langchain/qdrant";
 
 const COLLECTION_NAME = "my-docs";
@@ -25,7 +25,7 @@ export const embedDocuments = async (openAIApiKey: string) => {
   // });
   // console.log("🧹 Qdrant: delete all data！");
 
-  const newDocsWithIds = await uuidGenerater(allDocs);
+  const newDocsWithIds = await uuidGenerator(allDocs);
 
   //see if database already has my-docs vectors.
   const collections = await qdrantClient.getCollections();

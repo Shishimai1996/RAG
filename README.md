@@ -1,83 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# RAG Q&A Application
 
-## Getting Started
+An internal document Q&A system powered by Retrieval-Augmented Generation (RAG). Users type natural language questions and receive AI-generated answers grounded in Markdown documentation — with bilingual support for English and Japanese.
 
-if you run locally
+## Screenshots
 
-1. Run docker desktop 
-2. Run the below command to use the Qdrant database
+| Question Input | Answer (Streaming) |
+|---|---|
+| ![Input](public/Screenshot%202025-07-17%20at%2014.57.35.png) | ![Answer](public/Screenshot%202025-07-17%20at%2014.57.55.png) |
+
+## Features
+
+- **RAG Pipeline** — Markdown documents are chunked, embedded with OpenAI `text-embedding-3-small`, and stored in Qdrant. On each query, the top-10 semantically similar chunks are retrieved and passed to GPT-3.5-turbo as context via LangChain.
+- **Streaming Response with Typewriter Effect** — Answers stream character-by-character using the Web Streams API for a smooth UX.
+- **Bilingual UI (EN / JA)** — Full i18n support via `next-intl`; users switch locale without a page reload.
+- **Incremental Embedding** — Documents are UUID-hashed on ingestion, so only new content is added to the vector store on each run.
+- **Containerized** — Runs locally with Docker Compose; Docker image is built and pushed via GitHub Actions on deploy.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15 (App Router), React 19, TypeScript |
+| UI Components | Material UI v7 |
+| LLM | OpenAI GPT-3.5-turbo via LangChain |
+| Embeddings | OpenAI `text-embedding-3-small` |
+| Vector Store | Qdrant |
+| i18n | next-intl (English / Japanese) |
+| Containerization | Docker, Docker Compose |
+
+## Architecture
+
+![Architecture Diagram](public/architecture.png)
+
+1. Markdown files in `data/` are read, split by heading, embedded via OpenAI, and stored in Qdrant on startup (`npm run embed-docs`).
+2. The user submits a question through the chat UI.
+3. The question is embedded and the top-10 most semantically similar document chunks are retrieved from Qdrant.
+4. Retrieved chunks + the question are passed to GPT-3.5-turbo via LangChain's `createRetrievalChain`.
+5. The answer streams back to the browser character-by-character using the Web Streams API.
+
+## Getting Started (Local)
+
+### Prerequisites
+
+- Node.js 18+
+- Docker Desktop
+
+### Option A — Docker Compose (app + Qdrant together)
+
+```bash
+docker compose up
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### Option B — Run each service individually
+
+**1. Start Qdrant**
+
 ```bash
 docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 ```
 
-3. Run the development server:
+**2. Install dependencies and start the dev server**
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`npm run dev` automatically runs `embed-docs` first, which embeds any new Markdown files from `data/` into Qdrant before the server starts.
 
-You can start editing the page by modifying `app/pages.tsx`. The page auto-updates as you edit the file.
+**3. Open the app**
 
-If you use docker compose, run
+[http://localhost:3000](http://localhost:3000)
 
-```
-docker compose up
-```
+## Updating the Knowledge Base
 
+Place new or updated Markdown files in `data/`, then run:
 
-## Architecture
-
-![architecture](/public/architecture.png)
-
-## Deployed URL
-
-
-
-## Deploy 
-
-1. After push changes to this repository, access to Github Action [rag-deploy](https://github.com/wcm-wig-lab/ragAI-playground/actions/workflows/rag-deploy.yaml).
-
-2. Push Pun workflow button ![alt text](/public/image.png)
-
-3. Access to the Inventor portal repository and rap-deploy github [action](https://github.com/wcm-wig-lab/inventor-portal/actions/workflows/rag-deploy.yaml).
-
-4. Find the latest docker image in [Artifactory](https://artifactory.stargate.toyota/ui/native/wcm-wig-lab/inventor-portal/rag-frontend/)
-
-![alt text](/public/image-1.png)
-
-5. Go back to 3. and add the Image tag and run as develop environment.
-![alt text](/public/image-2.png)
-
-## Update database
-
-Qdrant database is running in the different pod from Rag app.
-If you need to update data, run the pod locally and do npm run embed-docs.
-
-1. Make sure you are not running other application locally
-
-2. Run Qdrant pod with the following command.
-```
-kubectl port-forward rag-db-0 6333:6333 --as wcm-inventor-portal-dev-admin
-```
-
-3. Run the following command to update database
-```
+```bash
 npm run embed-docs
 ```
 
-4. If you need to clean up old data from database and add new data, go to ``/lib/embedDocments.ts`` and uncomment from line 20 to 23. and run ``npm run embed-docs``.
+The script diffs incoming document UUIDs against the existing Qdrant collection and only uploads new content, avoiding duplicates.
+
+To wipe all existing vectors before re-embedding, uncomment lines 22–25 in [`lib/embedDocuments.ts`](lib/embedDocuments.ts):
+
+```ts
+await qdrantClient.delete(COLLECTION_NAME, { filter: {} });
 ```
-  //if you want to delete data from database.
-  // await qdrantClient.delete(COLLECTION_NAME, {
-  //   filter: {},
-  // });
-  // console.log("🧹 Qdrant: delete all data！");
+
+## CI/CD & Deployment
+
+The app is containerized with Docker. A GitHub Actions workflow builds a new Docker image on each deployment trigger and pushes it to the registry.
+
+## Project Structure
+
+```
+├── src/
+│   ├── app/
+│   │   ├── [locale]/          # i18n-aware pages (Next.js App Router)
+│   │   │   ├── page.tsx       # Server component (Keycloak auth check)
+│   │   │   └── clientHome.tsx # Chat UI (streaming, markdown rendering)
+│   │   └── api/ask/route.ts   # POST endpoint → LangChain RAG chain
+│   └── i18n/                  # next-intl routing & locale config
+├── lib/
+│   ├── langchain.ts           # LangChain retrieval chain setup
+│   ├── retrieveFromQdrant.ts  # Qdrant vector store retriever
+│   ├── embedDocuments.ts      # Incremental embedding logic
+│   ├── setupEmbedVector.ts    # OpenAI embedding model setup
+│   └── setupLlm.ts            # GPT-3.5-turbo model setup
+├── components/
+│   ├── retriever.ts           # Markdown loader & heading splitter
+│   └── uuidGenerater.ts       # UUID-based document deduplication
+├── scripts/
+│   └── embedMarkdown.ts       # Entry point for embed-docs script
+├── data/                      # Source Markdown documents
+├── messages/
+│   ├── en.json                # English UI strings
+│   └── ja.json                # Japanese UI strings
+└── docker-compose.yml
 ```
