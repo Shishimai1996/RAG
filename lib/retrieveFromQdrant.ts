@@ -3,7 +3,6 @@ dotenv.config();
 
 import { Document } from "@langchain/core/documents";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { BaseRetriever } from "@langchain/core/retrievers";
 import { embeddingVector } from "./setupEmbedVector";
 
 const COLLECTION_NAME = "my-docs";
