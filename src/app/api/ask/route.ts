@@ -30,6 +30,10 @@ export async function POST(req: Request) {
     return new NextResponse(stream);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    const e = error as { message?: string; status?: number; data?: unknown };
+    return NextResponse.json(
+      { error: "Server error", detail: e.message, status: e.status, data: e.data },
+      { status: 500 }
+    );
   }
 }
