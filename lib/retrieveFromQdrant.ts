@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import OpenAI from "openai";
 import { Document } from "@langchain/core/documents";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { embeddingVector } from "./setupEmbedVector";
 
 const COLLECTION_NAME = "my-docs";
 const K = 10;
@@ -14,13 +14,20 @@ export const prepareRetriever = async (openAIApiKey: string) => {
     apiKey: process.env.QDRANT_API_KEY,
   });
 
-  const embeddings = await embeddingVector(openAIApiKey);
+  const openai = new OpenAI({ apiKey: openAIApiKey });
 
   return {
     invoke: async (question: string): Promise<Document[]> => {
-      const rawVector = await embeddings.embedQuery(question);
-      const queryVector = Array.from(rawVector);
-      console.log("vector constructor:", (rawVector as unknown as object).constructor?.name, "isArray:", Array.isArray(rawVector), "len:", rawVector.length, "sample:", JSON.stringify(queryVector.slice(0, 2)));
+      // Use encoding_format: "float" to avoid the Buffer.buffer pool issue
+      // that causes @langchain/openai to return 16384 garbage floats on Vercel
+      const embeddingResponse = await openai.embeddings.create({
+        model: "text-embedding-3-small",
+        input: question,
+        encoding_format: "float",
+      });
+
+      const queryVector = embeddingResponse.data[0].embedding as number[];
+
       const results = await qdrantClient.search(COLLECTION_NAME, {
         vector: queryVector,
         limit: K,
