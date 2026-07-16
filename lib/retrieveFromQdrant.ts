@@ -1,28 +1,39 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { QdrantVectorStore } from "@langchain/qdrant";
+import { Document } from "@langchain/core/documents";
 import { QdrantClient } from "@qdrant/js-client-rest";
+import { BaseRetriever } from "@langchain/core/retrievers";
 import { embeddingVector } from "./setupEmbedVector";
 
+const COLLECTION_NAME = "my-docs";
+const K = 10;
+
 export const prepareRetriever = async (openAIApiKey: string) => {
-  //create client to connect qdrant
   const qdrantClient = new QdrantClient({
     url: process.env.QDRANT_URL,
     apiKey: process.env.QDRANT_API_KEY,
   });
 
-  //get embedding model of text-embedding-3-small
   const embeddings = await embeddingVector(openAIApiKey);
 
-  //return vector store data
-  const vectorStore = await QdrantVectorStore.fromExistingCollection(
-    embeddings,
-    {
-      client: qdrantClient,
-      collectionName: "my-docs",
-    },
-  );
+  return {
+    invoke: async (question: string): Promise<Document[]> => {
+      const queryVector = await embeddings.embedQuery(question);
+      const results = await qdrantClient.search(COLLECTION_NAME, {
+        vector: queryVector,
+        limit: K,
+        with_payload: ["metadata", "content"],
+        with_vector: false,
+      });
 
-  return vectorStore.asRetriever({ k: 10 });
+      return results.map(
+        (r) =>
+          new Document({
+            pageContent: (r.payload?.content as string) ?? "",
+            metadata: (r.payload?.metadata as Record<string, unknown>) ?? {},
+          }),
+      );
+    },
+  };
 };

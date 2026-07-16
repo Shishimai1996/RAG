@@ -1,7 +1,6 @@
 import { generateLlm } from "./setupLlm";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { createRetrievalChain } from "langchain/chains/retrieval";
 import { prepareRetriever } from "./retrieveFromQdrant";
 import { getOpenAIApiKey } from "./setupWoveyAccess";
 
@@ -9,24 +8,15 @@ export async function callLangchainModel(question: string) {
   const openAIApiKey = await getOpenAIApiKey();
 
   const retriever = await prepareRetriever(openAIApiKey);
-  //if you want to see the retrieved document, open the following lines.
   const retrievedDocs = await retriever.invoke(question);
   console.log(`🧠 Retrieved documents for question: "${question}"`);
   console.log(`📊 Found ${retrievedDocs.length} documents`);
-  retrievedDocs.forEach((doc, i) => {
-    console.log(`\n[Document ${i + 1}]`);
-    console.log(doc.pageContent);
-    if (doc.metadata) {
-      console.log("Metadata:", doc.metadata);
-    }
-  });
 
   const isJapanese = /[ぁ-んァ-ン一-龥]/.test(question);
   const fallbackText = isJapanese
     ? "申し訳ありませんが、答えを見つけることができませんでした。"
     : "Sorry, I couldn't find an answer.";
 
-  //create model and chain
   const prompt = ChatPromptTemplate.fromTemplate(
     `You are a helpful assistant that answers the user's question using the context below.
     Use **only the provided context**. If the answer is partially available, answer accordingly.
@@ -46,12 +36,10 @@ Question: {input}`,
     prompt,
   });
 
-  const chain = await createRetrievalChain({
-    retriever,
-    combineDocsChain,
+  const answer = await combineDocsChain.invoke({
+    input: question,
+    context: retrievedDocs,
   });
 
-  const result = await chain.invoke({ input: question });
-  console.log({ result });
-  return result.answer;
+  return answer;
 }
