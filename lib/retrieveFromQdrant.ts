@@ -18,7 +18,9 @@ export const prepareRetriever = async (openAIApiKey: string) => {
 
   return {
     invoke: async (question: string): Promise<Document[]> => {
-      const queryVector = await embeddings.embedQuery(question);
+      const rawVector = await embeddings.embedQuery(question);
+      const queryVector = Array.from(rawVector);
+      console.log("vector constructor:", (rawVector as unknown as object).constructor?.name, "isArray:", Array.isArray(rawVector), "len:", rawVector.length, "sample:", JSON.stringify(queryVector.slice(0, 2)));
       const results = await qdrantClient.search(COLLECTION_NAME, {
         vector: queryVector,
         limit: K,
