@@ -18,7 +18,7 @@
     "@langchain/qdrant": "^0.1.2",
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
-    "@qdrant/js-client-rest": "^1.18.0",
+    "@qdrant/js-client-rest": "^1.13.0",
     "dotenv": "^16.5.0",
     "faiss-node": "^0.5.1",
     "keycloak-js": "^26.2.0",
